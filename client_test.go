@@ -3,7 +3,6 @@ package retryablehttp
 import (
 	"bytes"
 	"context"
-	"errors"
 	"io"
 	"io/ioutil"
 	"net"
@@ -17,6 +16,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-hclog"
+	"github.com/pkg/errors"
 )
 
 func TestRequest(t *testing.T) {

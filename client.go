@@ -40,6 +40,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -207,7 +208,7 @@ func getBodyReaderAndContentLength(rawBody interface{}) (ReaderFunc, int64, erro
 			contentLength = int64(len(buf))
 
 		default:
-			return nil, 0, fmt.Errorf("cannot handle type %T", rawBody)
+			return nil, 0, errors.Errorf("cannot handle type %T", rawBody)
 		}
 	}
 	return bodyReader, contentLength, nil
@@ -581,7 +582,7 @@ forLoop:
 			c.HTTPClient.CloseIdleConnections()
 			return nil, req.Context().Err()
 		case <-maxTotalTimer.C:
-			err = fmt.Errorf("total wait time (%v) exceeded", c.TotalWaitMax)
+			err = errors.Errorf("total wait time (%v) exceeded", c.TotalWaitMax)
 			break forLoop
 		case <-time.After(wait):
 		}
@@ -598,7 +599,7 @@ forLoop:
 		resp.Body.Close()
 	}
 	c.HTTPClient.CloseIdleConnections()
-	return nil, fmt.Errorf("%s %s giving up after %d attempts",
+	return nil, errors.Errorf("%s %s giving up after %d attempts",
 		req.Method, req.URL, c.RetryMax+1)
 }
 
